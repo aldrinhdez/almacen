@@ -1,8 +1,10 @@
 package com.aldrin.almacen.utils;
 
 import com.aldrin.almacen.entities.Producto;
+import com.aldrin.almacen.entities.Sucursal;
 import com.aldrin.almacen.enums.Categoria;
 import com.aldrin.almacen.repositories.ProductoRepository;
+import com.aldrin.almacen.repositories.SucursalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -17,6 +19,7 @@ import java.util.List;
 public class DatosIniciales implements CommandLineRunner {
 
     private final ProductoRepository productoRepository;
+    private final SucursalRepository sucursalRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -45,5 +48,16 @@ public class DatosIniciales implements CommandLineRunner {
             ));
             log.info("Productos de prueba cargados correctamente");
         }
+
+        if(sucursalRepository.count() == 0){
+            sucursalRepository.saveAll(List.of(
+                    new Sucursal(null,
+                            "Sucursal central",
+                            "Av. Principal 123")
+            ));
+            log.info("Productos de prueba cargados correctamente");
+        }
+
+
     }
 }

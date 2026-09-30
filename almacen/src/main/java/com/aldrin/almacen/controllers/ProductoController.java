@@ -31,6 +31,8 @@ import java.util.List;
 @ApiResponse(responseCode = "500", description = "Error interno del servidor",
         content = @Content(mediaType = "application/problem+json",
                 schema = @Schema(implementation = ProblemaDoc.class)))
+
+
 public class ProductoController {
 
     private final ProductoService productoService;
