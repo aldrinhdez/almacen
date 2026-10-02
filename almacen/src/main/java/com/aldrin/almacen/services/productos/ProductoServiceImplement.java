@@ -7,6 +7,10 @@ import com.aldrin.almacen.enums.Categoria;
 import com.aldrin.almacen.exceptions.RecursoNoEncontradoException;
 import com.aldrin.almacen.mappers.ProductoMapper;
 
+//prueba
+import com.aldrin.almacen.exceptions.DatoInvalidoException;
+import com.aldrin.almacen.repositories.specifications.ProductoSpecifications;
+
 import com.aldrin.almacen.repositories.ProductoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +31,7 @@ public class ProductoServiceImplement implements ProductoService {
 
     private final ProductoMapper productoMapper;
 
-    @Override
+   /* @Override
     @Transactional(readOnly = true)
     public List<ProductoResponse> listar(String nombre, String categoria, BigDecimal precioMin, BigDecimal precioMax) {
 
@@ -36,7 +40,50 @@ public class ProductoServiceImplement implements ProductoService {
         return productoRepository.findAll().stream()
                 //.map(producto -> productoMapper.entidadAResponse(producto)).toList();
                 .map(productoMapper::entidadAResponse).toList();
+    }*/
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductoResponse> listar(String nombre, String categoria, BigDecimal precioMin, BigDecimal precioMax) {
+
+        if (precioMin != null && precioMin.signum() < 0) {
+            throw new DatoInvalidoException(
+                    "El precio mínimo no puede ser negativo");
+        }
+
+        if (precioMax != null && precioMax.signum() < 0) {
+            throw new DatoInvalidoException(
+                    "El precio máximo no puede ser negativo");
+        }
+
+        if (precioMin != null
+                && precioMax != null
+                && precioMin.compareTo(precioMax) > 0) {
+
+            throw new DatoInvalidoException(
+                    "El precio mínimo no puede ser mayor al máximo");
+        }
+
+        Categoria categoriaFiltro = null;
+
+        if (categoria != null && !categoria.isBlank()) {
+            categoriaFiltro =
+                    Categoria.obtenerCategoriaPorDescripcion(
+                            categoria.trim());
+        }
+
+        var specification = ProductoSpecifications.conFiltros(
+                nombre,
+                categoriaFiltro,
+                precioMin,
+                precioMax
+        );
+
+        return productoRepository.findAll(specification).stream()
+                .map(productoMapper::entidadAResponse)
+                .toList();
     }
+
 
     @Override
     @Transactional(readOnly = true)

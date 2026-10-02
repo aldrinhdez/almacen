@@ -10,17 +10,17 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
+
 @Entity
 @Table(name = "DETALLES_VENTAS")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Builder
+@Builder @Getter
 public class DetalleVenta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_VENTA")
+    @Column(name = "ID_DETALLE_VENTA")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -32,14 +32,14 @@ public class DetalleVenta {
     private Producto producto;
 
     @Column(name = "CANTIDAD_PRODUCTO", nullable = false)
-    private Integer  cantidadProducto;
+    private Integer cantidadProducto;
 
     @Column(name = "PRECIO_PRODUCTO", nullable = false)
-    private BigDecimal precioProdcuto;
+    private BigDecimal precioProducto;
 
+    public void asignarVenta(Venta venta) {
 
-    public void asignarVenta(Venta venta){
-        if(venta == null)
+        if (venta == null)
             throw new DatoInvalidoException("La venta es requerida");
 
         this.venta = venta;
